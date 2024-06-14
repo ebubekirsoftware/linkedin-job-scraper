@@ -44,23 +44,31 @@ def login_linkedin(driver):
         print(f"Hata LinkedIn girişinde: {e}")
 
 
-def search_posts(driver):
+def search_posts(driver, max_posts=10):
     try:
         driver.get(SEARCH_URL)
         time.sleep(5)
 
         posts = driver.find_elements(By.CLASS_NAME, 'search-result__info')
         links = []
+        count = 0
         for post in posts:
             try:
                 link = post.find_element(By.TAG_NAME, 'a').get_attribute('href')
-                links.append(link)
+                if is_valid_link(link):
+                    links.append(link)
+                    count += 1
+                    if count >= max_posts:
+                        break
             except Exception as e:
                 print(f"Hata link alma sırasında: {e}")
+                continue
         return links
     except Exception as e:
         print(f"Hata arama sayfasında: {e}")
         return []
+
+
 
 
 def is_valid_link(link):
@@ -114,8 +122,8 @@ def main():
     try:
         driver = webdriver.Chrome()
         login_linkedin(driver)
-        links = search_posts(driver)
-        job_links = filter_links(driver, links, job_keywords)
+        links = search_posts(driver, max_posts=10)
+        job_links = get_valid_job_links(driver, links, job_keywords)
         if job_links:
             send_email(job_links)
     except Exception as e:
@@ -127,10 +135,3 @@ def main():
 if __name__ == "__main__":
     # Manuel çalıştırma
     main()
-
-    # Schedule job
-    schedule.every().day.at("15:00").do(main)
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
