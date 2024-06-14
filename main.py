@@ -84,7 +84,7 @@ def send_email(links):
 
 
 def main():
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(executable_path='IEDriverServer.exe')
     login_linkedin(driver)
     links = search_posts(driver)
     job_links = filter_links(links)
