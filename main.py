@@ -15,8 +15,10 @@ LINKEDIN_PASSWORD = os.getenv('LINKEDIN_PASSWORD')
 # Gönderilerin kontrol edildiği URL
 SEARCH_URL = "https://www.linkedin.com/search/results/content/?keywords=%23hiring%20junior%20data%20scientist"
 
-# Göz ardı edilecek kelimeler
-EXCLUDED_KEYWORDS = ['keyword1', 'keyword2']
+
+# İş arama kelimeleri listesi
+job_keywords = ["Data Scientist", "Machine Learning", "Artificial Intelligence"]
+
 
 # E-posta ayarları
 SMTP_SERVER = 'smtp.yourserver.com'
@@ -56,11 +58,21 @@ def search_posts(driver):
     return links
 
 
-def filter_links(links):
+def is_valid_link(link):
+    return "linkedin.com/jobs" in link
+
+def contains_keywords(driver, link, keywords):
+    driver.get(link)
+    time.sleep(3)
+    page_content = driver.page_source
+    return any(keyword.lower() in page_content.lower() for keyword in keywords)
+
+def filter_links(driver, links, keywords):
     job_links = []
     for link in links:
-        if "linkedin.com/jobs" in link:
-            job_links.append(link)
+        if is_valid_link(link):
+            if contains_keywords(driver, link, keywords):
+                job_links.append(link)
     return job_links
 
 
@@ -85,7 +97,7 @@ def main():
     driver = webdriver.Chrome()
     login_linkedin(driver)
     links = search_posts(driver)
-    job_links = filter_links(links)
+    job_links = filter_links(driver, links, job_keywords)
     if job_links:
         send_email(job_links)
     driver.quit()
