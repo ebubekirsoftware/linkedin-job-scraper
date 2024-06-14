@@ -82,7 +82,7 @@ def send_email(links):
 
 
 def main():
-    driver = webdriver.Chrome(executable_path='./IEDriverServer.exe')
+    driver = webdriver.Chrome()
     login_linkedin(driver)
     links = search_posts(driver)
     job_links = filter_links(links)
@@ -90,15 +90,13 @@ def main():
         send_email(job_links)
     driver.quit()
 
+if __name__ == "__main__":
+    # Manuel çalıştırma
+    main()
 
-# Manuel çalıştırma
-main()
+    # Schedule job
+    schedule.every().day.at("15:00").do(main)
 
-# Schedule job
-schedule.every().day.at("15:00").do(main)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
-
-
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
