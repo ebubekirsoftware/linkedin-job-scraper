@@ -11,8 +11,8 @@ import schedule
 import os
 
 # LinkedIn giriş bilgileri
-LINKEDIN_USERNAME = os.getenv('tosuntv60@gmail.com')
-LINKEDIN_PASSWORD = os.getenv('qqqq1111****')
+LINKEDIN_USERNAME = os.getenv('LINKEDIN_USERNAME')
+LINKEDIN_PASSWORD = os.getenv('LINKEDIN_PASSWORD')
 
 # Gönderilerin kontrol edildiği URL
 SEARCH_URL = "https://www.linkedin.com/search/results/content/?keywords=%23hiring%20junior%20data%20scientist"
@@ -23,9 +23,9 @@ EXCLUDED_KEYWORDS = ['keyword1', 'keyword2']
 # E-posta ayarları
 SMTP_SERVER = 'smtp.yourserver.com'
 SMTP_PORT = 587
-SMTP_USERNAME = 'tosuntv60@gmail.com'
-SMTP_PASSWORD = 'qqqq1111****'
-EMAIL_TO = 'ebubekirsoftware@gmail.com'
+SMTP_USERNAME = 'you@example.com'
+SMTP_PASSWORD = 'yourpassword'
+EMAIL_TO = 'recipient@example.com'
 
 
 def login_linkedin(driver):
