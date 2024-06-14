@@ -15,10 +15,8 @@ LINKEDIN_PASSWORD = os.getenv('LINKEDIN_PASSWORD')
 # Gönderilerin kontrol edildiği URL
 SEARCH_URL = "https://www.linkedin.com/search/results/content/?keywords=%23hiring%20junior%20data%20scientist"
 
-
 # İş arama kelimeleri listesi
 job_keywords = ["Data Scientist", "Machine Learning", "Artificial Intelligence"]
-
 
 # E-posta ayarları
 SMTP_SERVER = 'smtp.yourserver.com'
@@ -29,78 +27,102 @@ EMAIL_TO = 'recipient@example.com'
 
 
 def login_linkedin(driver):
-    driver.get("https://www.linkedin.com/login")
-    time.sleep(2)
+    try:
+        driver.get("https://www.linkedin.com/login")
+        time.sleep(2)
 
-    username_field = driver.find_element(By.ID, "username")
-    password_field = driver.find_element(By.ID, "password")
+        username_field = driver.find_element(By.ID, "username")
+        password_field = driver.find_element(By.ID, "password")
 
-    username_field.send_keys(LINKEDIN_USERNAME)
-    password_field.send_keys(LINKEDIN_PASSWORD)
+        username_field.send_keys(LINKEDIN_USERNAME)
+        password_field.send_keys(LINKEDIN_PASSWORD)
 
-    login_button = driver.find_element(By.XPATH, "//button[@type='submit']")
-    login_button.click()
-    time.sleep(5)
+        login_button = driver.find_element(By.XPATH, "//button[@type='submit']")
+        login_button.click()
+        time.sleep(5)
+    except Exception as e:
+        print(f"Hata LinkedIn girişinde: {e}")
 
 
 def search_posts(driver):
-    driver.get(SEARCH_URL)
-    time.sleep(5)
+    try:
+        driver.get(SEARCH_URL)
+        time.sleep(5)
 
-    posts = driver.find_elements(By.CLASS_NAME, 'search-result__info')
-    links = []
-    for post in posts:
-        try:
-            link = post.find_element(By.TAG_NAME, 'a').get_attribute('href')
-            links.append(link)
-        except Exception as e:
-            print(e)
-    return links
+        posts = driver.find_elements(By.CLASS_NAME, 'search-result__info')
+        links = []
+        for post in posts:
+            try:
+                link = post.find_element(By.TAG_NAME, 'a').get_attribute('href')
+                links.append(link)
+            except Exception as e:
+                print(f"Hata link alma sırasında: {e}")
+        return links
+    except Exception as e:
+        print(f"Hata arama sayfasında: {e}")
+        return []
 
 
 def is_valid_link(link):
     return "linkedin.com/jobs" in link
 
+
 def contains_keywords(driver, link, keywords):
-    driver.get(link)
-    time.sleep(3)
-    page_content = driver.page_source
-    return any(keyword.lower() in page_content.lower() for keyword in keywords)
+    try:
+        driver.get(link)
+        time.sleep(3)
+        page_content = driver.page_source
+        return any(keyword.lower() in page_content.lower() for keyword in keywords)
+    except Exception as e:
+        print(f"Hata sayfa içeriğini kontrol ederken: {e}")
+        return False
+
 
 def filter_links(driver, links, keywords):
     job_links = []
     for link in links:
-        if is_valid_link(link):
-            if contains_keywords(driver, link, keywords):
-                job_links.append(link)
+        try:
+            if is_valid_link(link):
+                if contains_keywords(driver, link, keywords):
+                    job_links.append(link)
+        except Exception as e:
+            print(f"Hata link filtreleme sırasında: {e}")
     return job_links
 
 
 def send_email(links):
-    msg = MIMEMultipart()
-    msg['From'] = SMTP_USERNAME
-    msg['To'] = EMAIL_TO
-    msg['Subject'] = "New LinkedIn Job Postings"
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = SMTP_USERNAME
+        msg['To'] = EMAIL_TO
+        msg['Subject'] = "New LinkedIn Job Postings"
 
-    body = "\n".join(links)
-    msg.attach(MIMEText(body, 'plain'))
+        body = "\n".join(links)
+        msg.attach(MIMEText(body, 'plain'))
 
-    server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
-    server.starttls()
-    server.login(SMTP_USERNAME, SMTP_PASSWORD)
-    text = msg.as_string()
-    server.sendmail(SMTP_USERNAME, EMAIL_TO, text)
-    server.quit()
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(SMTP_USERNAME, SMTP_PASSWORD)
+        text = msg.as_string()
+        server.sendmail(SMTP_USERNAME, EMAIL_TO, text)
+        server.quit()
+    except Exception as e:
+        print(f"Hata e-posta gönderirken: {e}")
 
 
 def main():
-    driver = webdriver.Chrome()
-    login_linkedin(driver)
-    links = search_posts(driver)
-    job_links = filter_links(driver, links, job_keywords)
-    if job_links:
-        send_email(job_links)
-    driver.quit()
+    try:
+        driver = webdriver.Chrome()
+        login_linkedin(driver)
+        links = search_posts(driver)
+        job_links = filter_links(driver, links, job_keywords)
+        if job_links:
+            send_email(job_links)
+    except Exception as e:
+        print(f"Ana işlevde hata oluştu: {e}")
+    finally:
+        driver.quit()
+
 
 if __name__ == "__main__":
     # Manuel çalıştırma
