@@ -86,7 +86,7 @@ def contains_keywords(driver, link, keywords):
         return False
 
 
-def filter_links(driver, links, keywords):
+def get_valid_job_links(driver, links, keywords):
     job_links = []
     for link in links:
         try:
