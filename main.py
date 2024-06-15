@@ -54,19 +54,19 @@ def login_linkedin(driver):
 def search_posts(driver, max_posts=10):
     try:
         driver.get(SEARCH_URL)
-        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'search-result__info')))
-        #time.sleep(5)
+        time.sleep(5)
         
 # Sayfa kaynağını yazdır
-        #page_source = driver.page_source
-        #print(page_source)
+        page_source = driver.page_source
+        print(page_source)
         
-        posts = driver.find_elements(By.CLASS_NAME, 'search-result__info')
+        # Use XPath for a more specific selector
+        posts = driver.find_elements(By.XPATH, "//div[@class='search-result__info']//a")
         links = []
         count = 0
         for post in posts:
             try:
-                link = post.find_element(By.TAG_NAME, 'a').get_attribute('href')
+                link = post.get_attribute('href')
                 if is_valid_link(link):
                     links.append(link)
                     count += 1
@@ -80,7 +80,6 @@ def search_posts(driver, max_posts=10):
     except Exception as e:
         print(f"Hata arama sayfasında: {e}")
         return []
-
 
 
 
