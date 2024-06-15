@@ -124,11 +124,7 @@ def main():
         driver = webdriver.Chrome()
         login_linkedin(driver)
         links = search_posts(driver, max_posts=10)
-        if not links:
-            sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
-            print("LinkedIn'den hiçbir link bulunamadı.")
-        else:
-            print(links)
+        links
         job_links = get_valid_job_links(driver, links, job_keywords)
         if job_links:
             send_email(job_links)
