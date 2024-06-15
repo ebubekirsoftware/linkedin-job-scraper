@@ -20,12 +20,6 @@ jobs:
       with:
         python-version: '3.8'
 
-    - name: Download IEDriverServer
-      run: |
-        Invoke-WebRequest -Uri https://selenium-release.storage.googleapis.com/3.150/IEDriverServer_Win32_3.150.1.zip -OutFile IEDriverServer.zip
-        Expand-Archive -Path IEDriverServer.zip -DestinationPath .
-        $env:PATH += ";$pwd\IEDriverServer"
-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
