@@ -64,7 +64,7 @@ def search_posts(driver, max_posts=10):
         print(page_source)
         
         # Use XPath for a more specific selector
-        posts = driver.find_elements(By.XPATH, "//div[@class='search-result__info']//a")
+        posts = driver.find_elements(By.XPATH, "//a[@data-attribute-index]")
         links = []
         count = 0
         for post in posts:
