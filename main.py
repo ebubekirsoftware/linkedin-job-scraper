@@ -56,7 +56,7 @@ def search_posts(driver, max_posts=10):
         driver.get(SEARCH_URL)
         time.sleep(5)
         
-# Sayfa kaynağını yazdır
+        # Sayfa kaynağını yazdır
         page_source = driver.page_source
         print(page_source)
         
@@ -136,10 +136,10 @@ def send_email(links):
 
 def main():
     try:
-        driver = webdriver.Chrome()
+        # Use IEDriverServer instead of Chrome
+        driver = webdriver.Ie(executable_path='./IEDriverServer.exe')
         login_linkedin(driver)
         links = search_posts(driver, max_posts=10)
-        links
         job_links = get_valid_job_links(driver, links, job_keywords)
         if job_links:
             send_email(job_links)
