@@ -25,6 +25,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install selenium requests beautifulsoup4 schedule
 
+    - name: Download IEDriverServer
+      run: |
+        curl -o IEDriverServer.zip https://selenium-release.storage.googleapis.com/3.150/IEDriverServer_Win32_3.150.1.zip
+        tar -xf IEDriverServer.zip
+
     - name: Run scraper
       env:
         LINKEDIN_USERNAME: ${{ secrets.LINKEDIN_USERNAME }}
@@ -33,7 +38,6 @@ jobs:
         SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
       run: |
         python main.py
-
 
 
 
