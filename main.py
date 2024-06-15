@@ -119,25 +119,15 @@ def send_email(links):
 
 
 
-##############
-def save_links_to_file(links, filename='linkedin_links.txt'):
-    try:
-        with open(filename, 'w', encoding='utf-8') as file:
-            for link in links:
-                file.write(link + '\n')
-        print(f"Linkler başarıyla '{filename}' dosyasına kaydedildi.")
-    except Exception as e:
-        print(f"Hata linkleri dosyaya kaydederken: {e}")
-#################
-
-
-
 def main():
     try:
         driver = webdriver.Chrome()
         login_linkedin(driver)
         links = search_posts(driver, max_posts=10)
-        save_links_to_file(links)
+        if not links:
+            print("LinkedIn'den hiçbir link bulunamadı.")
+        else:
+            print(links)
         job_links = get_valid_job_links(driver, links, job_keywords)
         if job_links:
             send_email(job_links)
