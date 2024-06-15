@@ -1,3 +1,5 @@
+import sys
+import io
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -7,6 +9,9 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import schedule
 import os
+
+# Standart çıktı akışını UTF-8 olarak ayarla
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # LinkedIn giriş bilgileri
 LINKEDIN_USERNAME = os.getenv('LINKEDIN_USERNAME')
