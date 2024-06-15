@@ -1,16 +1,19 @@
 import sys
 import io
+import time
+import smtplib
+import schedule
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-import time
-import smtplib
+from selenium.webdriver.ie.service import Service as IeService
+from selenium.webdriver.ie.webdriver import WebDriver as IeDriver
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import schedule
-import os
+
 
 # Standart çıktı akışını UTF-8 olarak ayarla
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
@@ -136,8 +139,10 @@ def send_email(links):
 
 def main():
     try:
-        # Use IEDriverServer instead of Chrome
-        driver = webdriver.Ie(executable_path='linkedin-job-scraper/IEDriverServer.exe')
+        # Correct initialization of IEDriver with the provided path
+        ie_service = IeService(executable_path='./IEDriverServer.exe')
+        driver = IeDriver(service=ie_service)
+        
         login_linkedin(driver)
         links = search_posts(driver, max_posts=10)
         job_links = get_valid_job_links(driver, links, job_keywords)
@@ -146,8 +151,11 @@ def main():
     except Exception as e:
         print(f"Ana işlevde hata oluştu: {e}")
     finally:
-        driver.quit()
-
+        try:
+            if driver:
+                driver.quit()
+        except Exception as e:
+            print(f"Driver kapatma sırasında hata: {e}")
 
 if __name__ == "__main__":
     # Manuel çalıştırma
