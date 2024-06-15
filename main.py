@@ -137,7 +137,7 @@ def send_email(links):
 def main():
     try:
         # Use IEDriverServer instead of Chrome
-        driver = webdriver.Ie(executable_path='./IEDriverServer.exe')
+        driver = webdriver.Ie
         login_linkedin(driver)
         links = search_posts(driver, max_posts=10)
         job_links = get_valid_job_links(driver, links, job_keywords)
