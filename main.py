@@ -2,6 +2,8 @@ import sys
 import io
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
 import smtplib
@@ -52,11 +54,12 @@ def login_linkedin(driver):
 def search_posts(driver, max_posts=10):
     try:
         driver.get(SEARCH_URL)
-        time.sleep(5)
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, 'search-result__info')))
+        #time.sleep(5)
         
 # Sayfa kaynağını yazdır
-        page_source = driver.page_source
-        print(page_source)
+        #page_source = driver.page_source
+        #print(page_source)
         
         posts = driver.find_elements(By.CLASS_NAME, 'search-result__info')
         links = []
