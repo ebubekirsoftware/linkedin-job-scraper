@@ -53,7 +53,11 @@ def search_posts(driver, max_posts=10):
     try:
         driver.get(SEARCH_URL)
         time.sleep(5)
-
+        
+# Sayfa kaynağını yazdır
+        page_source = driver.page_source
+        print(page_source)
+        
         posts = driver.find_elements(By.CLASS_NAME, 'search-result__info')
         links = []
         count = 0
