@@ -20,7 +20,7 @@ LINKEDIN_USERNAME = os.getenv('LINKEDIN_USERNAME')
 LINKEDIN_PASSWORD = os.getenv('LINKEDIN_PASSWORD')
 
 # Gönderilerin kontrol edildiği URL
-SEARCH_URL = "https://www.linkedin.com/search/results/content/?keywords=%23hiring%20junior%20data%20scientist"
+SEARCH_URL = "https://www.linkedin.com/search/results/content/?datePosted=%22past-24h%22&keywords=%23hiring%20junior%20data%20scientist&origin=FACETED_SEARCH&sid=~ID"
 
 # İş arama kelimeleri listesi
 job_keywords = ["Data Scientist", "Machine Learning", "Artificial Intelligence", "AI", "Data Analyst", "Data", "data"]
