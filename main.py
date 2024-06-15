@@ -125,6 +125,7 @@ def main():
         login_linkedin(driver)
         links = search_posts(driver, max_posts=10)
         if not links:
+            sys.stdout = open(sys.stdout.fileno(), mode='w', encoding='utf8', buffering=1)
             print("LinkedIn'den hiçbir link bulunamadı.")
         else:
             print(links)
